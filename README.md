@@ -1,7 +1,7 @@
 # Bright-Money-Backend-Assignment
 
 
-![Bright-Money Logo](https://s3.ap-south-1.amazonaws.com/assets.ynos.in/startup-logos/YNOS384128.jpg)
+![Bright-Money Logo]([https://s3.ap-south-1.amazonaws.com/assets.ynos.in/startup-logos/YNOS384128.jpg](https://images.crunchbase.com/image/upload/c_lpad,h_256,w_256,f_auto,q_auto:eco,dpr_1/xtumd43aa8shqi21bd94))
 
 ## Table of Contents
 - [Tech Stack](#tech-stack)
