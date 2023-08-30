@@ -11,58 +11,131 @@ from django.db.models import Sum
 from .tasks import calculate_credit_score
 
 
-
-
-
 class RegisterUserView(APIView):
+    """
+    API View for registering users.
+
+    This view allows the registration of new users by processing a POST request.
+    User data including user ID, name, email, and annual income should be provided
+    in the request body. Upon successful registration, a new user record is created
+    in the database, and an asynchronous task is triggered to calculate the user's
+    credit score.
+
+    Methods:
+    - POST: Register a new user.
+
+    Usage:
+    To register a new user, make a POST request with user data including user ID,
+    name, email, and annual income. The email address provided will be validated
+    for correctness.
+
+    Example POST data:
+    {
+        "user_id": "12345",
+        "name": "John Doe",
+        "email": "john@example.com",
+        "annual_income": 60000
+    }
+
+    Example successful response:
+    HTTP 200 OK
+    {
+        "unique_user_id": "12345"
+    }
+
+    Example error response:
+    HTTP 400 Bad Request
+    {
+        "error": "Details about the encountered error."
+    }
+    """
+
     def post(self, request):
+        """
+        Register a new user.
+
+        Args:
+        - request: The incoming HTTP request containing user data.
+
+        Returns:
+        - Response: A success message or an error message if registration fails.
+          HTTP 200 OK on success, HTTP 400 Bad Request on failure.
+        """
         data = request.data
-        # user_id_validator = RegexValidator(r'^\d{12}$', 'Enter a valid Aadhar number (12 digits)')
-        # try:
-        #     user_id_validator(data['user_id'])
-        # except ValidationError as e:
-        #     return Response({"error": "Invalid user_id format"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # # Validate email using EmailValidator
         email_validator = EmailValidator(message='Enter a valid email address')
-        # try:
-        #     email_validator(data['email'])
-        # except ValidationError as e:
-        #     return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
+        
         try:
-            # user_id_validator(data['user_id'])
             email_validator(data['email'])
-            user = User.objects.create(user_id = data['user_id'], name=data['name'], email=data['email'], annual_income=data['annual_income'])
-            
+            user = User.objects.create(
+                user_id=data['user_id'],
+                name=data['name'],
+                email=data['email'],
+                annual_income=data['annual_income']
+            )
             calculate_credit_score.delay(user.id)  # Trigger async task to calculate credit score
             return Response({"unique_user_id": str(data['user_id'])}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-    def get(self, request): 
-        users = User.objects.all()
-        user_data = []
-        for user in users:
-            user_data.append({
-                'id': user.id,
-                'user_id':user.user_id,
-                'name': user.name,
-                'email': user.email,
-                'annual_income': user.annual_income,
-                'credit_score':user.credit_score
-                # Add more fields if needed
-            })
-        return Response(user_data, status=status.HTTP_200_OK)
-
 
 
 
 class ApplyLoanView(APIView):
+    """
+    API View for applying for a loan.
+
+    This view allows users to apply for a loan by submitting necessary loan details
+    in a POST request. The eligibility of the user for the loan is checked based on
+    their credit score and annual income. If eligible, the loan application is processed
+    and relevant loan payments are scheduled.
+
+    Methods:
+    - POST: Apply for a loan.
+
+    Usage:
+    To apply for a loan, make a POST request with loan details including user ID,
+    loan type, loan amount, disbursement date, tenure in months, and interest rate.
+
+    Example POST data:
+    {
+        "user_id": "12345",
+        "loan_type": "Home",
+        "loan_amount": 5000000,
+        "disbursement_date": "2023-09-01",
+        "tenure_months": 120,
+        "interest_rate": 8.5
+    }
+
+    Example successful response:
+    HTTP 200 OK
+    {
+        "loan_application_id": "a1b2c3d4e5f6",
+        "due_dates_amt": {
+            "emi_dates": ["2023-09-01", "2023-10-01", ...],
+            "emi_amounts": [50000, 50000, ...]
+        }
+    }
+
+    Example error response:
+    HTTP 400 Bad Request
+    {
+        "error": "Details about the encountered error."
+    }
+    """
+
     def post(self, request):
+        """
+        Apply for a loan.
+
+        Args:
+        - request: The incoming HTTP request containing loan application data.
+
+        Returns:
+        - Response: A success message or an error message if loan application fails.
+          HTTP 200 OK on success, HTTP 400 Bad Request on failure.
+        """
         data = request.data
         try:
             user = User.objects.get(user_id=data['user_id'])
-            print("reached 1")
             if user.credit_score >= 450 and user.annual_income >= 150000:
                 loan_amount_bounds = {
                     'Car': 750000,
@@ -70,28 +143,22 @@ class ApplyLoanView(APIView):
                     'Education': 5000000,
                     'Personal': 1000000
                 }
+                
                 loan_type = data['loan_type']
                 loan_amount = data['loan_amount']
                 disbursement_date = data['disbursement_date']
                 tenure_months = data['tenure_months']
                 interest_rate = data['interest_rate']
-                print("reached 2")
-                if loan_type in loan_amount_bounds and loan_amount <= loan_amount_bounds[loan_type]:
-                    
+                
+                if loan_type in loan_amount_bounds and loan_amount <= loan_amount_bounds[loan_type]:              
                     #Formula used for calculating emi's P x R x (1+R)^N / [(1+R)^N-1] 
                     monthly_interest_rate = (interest_rate/12)/100
                     emi_numerator = ((loan_amount*monthly_interest_rate)*((1+monthly_interest_rate)**tenure_months))
-                    emi_denominator = (((1+monthly_interest_rate)**tenure_months)-1)
-                    
-                    emi_amount = emi_numerator/emi_denominator
-                    
+                    emi_denominator = (((1+monthly_interest_rate)**tenure_months)-1)          
+                    emi_amount = emi_numerator/emi_denominator              
                     total_amount_to_pay =  emi_amount*tenure_months
                     interest_earned = total_amount_to_pay  - loan_amount
                     
-                    
-                    
-                    
-                       
                     #error here somehow....
                     if (emi_amount>(user.annual_income*6/120)):
                         return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Try with lower loan amount or greater tenure "})
@@ -100,13 +167,7 @@ class ApplyLoanView(APIView):
                         return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": "Try increasing Interest Rate/Tenure"})
                     
                     
-                    
                     loan_unique_id = uuid.uuid4() 
-                    
-
-                    # Save loan application
-                    
-                    # year = 
                     date_parsed = disbursement_date.split('-')
                     
                     disbursement_date =  date(int(date_parsed[0]), int(date_parsed[1]), int(date_parsed[2]))
@@ -166,28 +227,64 @@ class ApplyLoanView(APIView):
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST, data={"error": str(e)})
         
-    def get(self, request):
-        loans = LoanApplication.objects.all()
-        loan_data = []
-        for loan in loans:
-            loan_data.append({
-                "loan_id": loan.loan_id,
-                "user": model_to_dict(loan.user),
-                "loan_type": loan.loan_type,
-                "loan_amount": float(loan.loan_amount),
-                "interest_rate": float(loan.interest_rate),
-                "tenure_months": loan.tenure_months,
-                "emi_amount": float(loan.emi_amount),
-                "disbursement_date": loan.disbursement_date.strftime('%Y-%m-%d')
-            })
-        
-        return Response(loan_data, status=status.HTTP_200_OK)
-    
+
+   
+
+
+
+
+
+
+
 
     
 
+    
 class MakePaymentView(APIView):
+    """
+    API View for making payments towards a loan.
+
+    This view allows users to make payments towards an existing loan by submitting
+    the loan ID and payment amount in a POST request. The payment is applied to the
+    outstanding dues in the following manner:
+    - Current dues are prioritized first.
+    - Any remaining payment is applied to past dues, starting from the earliest.
+    - Any remaining payment is distributed evenly among future dues.
+
+    Methods:
+    - POST: Make a payment towards a loan.
+
+    Usage:
+    To make a payment towards a loan, make a POST request with the loan ID and
+    the payment amount.
+
+    Example POST data:
+    {
+        "loan_id": "a1b2c3d4e5f6",
+        "amount": 50000
+    }
+
+    Example successful response:
+    HTTP 200 OK
+
+    Example error response:
+    HTTP 400 Bad Request
+    {
+        "Error": "Details about the encountered error."
+    }
+    """
+
     def post(self, request):
+        """
+        Make a payment towards a loan.
+
+        Args:
+            request (Request): The incoming HTTP request containing loan payment data.
+
+        Returns:
+            Response: A success message or an error message if payment processing fails.
+            HTTP 200 OK on success, HTTP 400 Bad Request on failure.
+        """
         data = request.data
         loan_id = data['loan_id']
         payment_amount = data['amount']
@@ -250,24 +347,63 @@ class MakePaymentView(APIView):
         except Exception as e:
             return Response({"Error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    def get(self, request):
-        # data = request.data
-        # loan_id = data['loan_id']
-        loan_application = LoanApplication.objects.get(loan_id= "e0e52489-f7c4-41bf-8f3b-8b286b675018",)
-        loan_payments = LoanPayment.objects.filter(loan_application = loan_application)
-        loan_payments_data = []
-        for loan_payment_record in loan_payments:
-            loan_payments_data.append({
-                "loan_application": model_to_dict(loan_payment_record.loan_application),
-                "due_date": loan_payment_record.due_date,
-                "amount_due": loan_payment_record.amount_due,
-                "is_paid": loan_payment_record.is_paid
-            })
-        
-        return Response(loan_payments_data, status=status.HTTP_200_OK)
+ 
   
 class GetStatementView(APIView):
+    """
+    API View for getting the loan statement.
+
+    This view allows users to retrieve the loan statement for a specific loan by providing the loan ID.
+    The loan statement includes details such as the current date, principal amount, interest amount,
+    and upcoming payment transactions.
+
+    Methods:
+    - GET: Get the loan statement.
+
+    Usage:
+    To get the loan statement, make a GET request with the loan ID as a query parameter.
+
+    Example request:
+    GET /api/get-statement/?loan_id=a1b2c3d4e5f6
+
+    Example successful response:
+    HTTP 200 OK
+    {
+        "current_date": "2023-08-30",
+        "Principal": 5000.0,
+        "Interest": 833.33,
+        "upcoming_transactions": [
+            {
+                "due_date": "2023-09-01",
+                "due_amount": 5833.33
+            },
+            {
+                "due_date": "2023-10-01",
+                "due_amount": 5833.33
+            },
+            ...
+        ]
+    }
+
+    Example error response:
+    HTTP 400 Bad Request
+    {
+        "error": "Details about the encountered error."
+    }
+    """
+
     def get(self, request):
+        """
+        Get the loan statement.
+
+        Args:
+            request (Request): The incoming HTTP request containing the loan ID as a query parameter.
+
+        Returns:
+            Response: The loan statement or an error message if the statement cannot be generated.
+            HTTP 200 OK on success, HTTP 400 Bad Request on failure.
+        """
+
         try:
             
             loan_id = request.query_params.get('loan_id')
@@ -308,14 +444,7 @@ class GetStatementView(APIView):
                 "Interest":interest_amount,
                 "upcoming_transactions":upcoming_transactions
                 
-            }   
-                
-            
-            
-            
-            
-            
-            
+            }         
             
             return Response(status=status.HTTP_200_OK, data=statement)
         except LoanApplication.DoesNotExist:
