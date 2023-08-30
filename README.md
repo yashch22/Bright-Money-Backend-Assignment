@@ -30,7 +30,7 @@ To get started with the project, follow these steps:
    ```
    
 2. Set up a virtual environment:
- ``` 
+   ``` 
    python3 -m venv venv  # Create a virtual environment
    source venv/bin/activate  # Activate the virtual environment (on macOS/Linux)
 
@@ -44,11 +44,11 @@ To get started with the project, follow these steps:
    ```
 4. Setup and run rabbitmq:
 On mac
- ``` 
-brew install rabbitmq
-export PATH=$PATH:/usr/local/opt/rabbitmq/sbin
-brew services start rabbitmq
-```
+  ``` 
+  brew install rabbitmq
+  export PATH=$PATH:/usr/local/opt/rabbitmq/sbin
+  brew services start rabbitmq
+  ```
 
 5. Apply Migrations and run the server:
    ``` 
