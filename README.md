@@ -65,6 +65,9 @@ To get started with the project, follow these steps:
    python3 manage.py runserver
 
    ```
+## Installation
+<img src="https://www.sherpalo.com/static/e2e31bb6a086dbce5418180ac1a6c646/logo_bright-colour.png" alt="Bright Money logo" width="200">
+
 
 ## Project Structure
 The project structure is organized as follows:
