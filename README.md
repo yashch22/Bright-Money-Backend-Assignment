@@ -11,7 +11,7 @@
 ## Table of Contents
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
-- [Data Model](#DataModel)
+- [Data Model](#data-model)
 - [Project Structure](#project-structure)
 - [API Endpoint](#api-endpoint)
 - [Future Scope](#future-improvements)
