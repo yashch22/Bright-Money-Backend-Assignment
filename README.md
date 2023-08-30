@@ -5,7 +5,7 @@
 
 
 
-<img src="https://www.sherpalo.com/static/e2e31bb6a086dbce5418180ac1a6c646/logo_bright-colour.png" alt="Image Alt Text" width="200">
+<img src="https://www.sherpalo.com/static/e2e31bb6a086dbce5418180ac1a6c646/logo_bright-colour.png" alt="Bright Money logo" width="200">
 
 
 ## Table of Contents
@@ -21,7 +21,10 @@
 
 ## Tech Stack
 
-![Django](https://static.djangoproject.com/img/logos/django-logo-negative.1d528e2cb5fb.png) <img src="https://blog.knoldus.com/wp-content/uploads/2019/05/rabbitmq.png" alt="RabbitMq Logo" height="48">![Sqlite](https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/SQLite370.svg/2560px-SQLite370.svg.png) 
+<img src="https://static.djangoproject.com/img/logos/django-logo-negative.1d528e2cb5fb.png" alt="Django logo" width="200">
+<img src="https://blog.knoldus.com/wp-content/uploads/2019/05/rabbitmq.png" alt="RabbitMq Logo" width="200">
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/SQLite370.svg/2560px-SQLite370.svg.png" alt="Django logo" width="200">
+
 
 
 ## Installation
