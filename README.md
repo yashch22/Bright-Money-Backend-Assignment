@@ -67,7 +67,7 @@ To get started with the project, follow these steps:
 
    ```
 ## Data Model
-<img src="loan_management_system/assets/Models.svg" alt="Bright Money logo" width="500">
+<img src="loan_management_system/assets/Models.svg" alt="Bright Money logo" width="800">
 
 
 ## Project Structure
