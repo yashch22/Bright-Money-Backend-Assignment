@@ -3,6 +3,7 @@
 
 ![Bright-Money Logo](https://www.sherpalo.com/static/e2e31bb6a086dbce5418180ac1a6c646/logo_bright-colour.png)
 
+<img src="https://www.sherpalo.com/static/e2e31bb6a086dbce5418180ac1a6c646/logo_bright-colour.png" alt="Image Alt Text" width="200">
 ## Table of Contents
 - [Tech Stack](#tech-stack)
 - [Installation](#installation)
