@@ -104,7 +104,7 @@ The backend exposes the following API endpoints:
 
 ## Future Scope
 
-1. **Enhanced User Authentication**: We plan to introduce a robust authentication system that allows users to create passwords, enhancing account security and providing a more personalized experience.
-2. **Streamlined Authentication with JWT**: Our roadmap includes implementing JSON Web Tokens (JWT) for authentication. This not only improves security but also reduces payload size, leading to faster and smoother authentication processes.
-3. **Dockerization for Ease of Deployment**: We're exploring the Dockerization of our system to simplify deployment across different environments. Docker containers will ensure consistency and easy scaling, making the platform more accessible and manageable.
+1. **Enhanced User Authentication**:Introducing a robust authentication system that allows users to create passwords, enhancing account security and providing a more personalized experience.
+2. **Streamlined Authentication with JWT**: Implementing JSON Web Tokens (JWT) for authentication. This not only improves security but also reduces payload size, leading to faster and smoother authentication processes.
+3. **Dockerization for Ease of Deployment**: Dockerization of our system to simplify deployment across different environments. Docker containers will ensure consistency and easy scaling, making the platform more accessible and manageable.
 4. **Microservices Architecture**: Moving towards a microservices architecture, where different components of the system, such as user registration, loan applications, payments, and statements, will be developed and deployed as individual microservices. This decoupled structure allows us to isolate functionalities and scale them as needed.
