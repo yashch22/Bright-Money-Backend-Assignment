@@ -1,7 +1,7 @@
 # Bright-Money-Backend-Assignment
 
 
-![Bright-Money Logo]([https://www.sherpalo.com/static/e2e31bb6a086dbce5418180ac1a6c646/logo_bright-colour.png])
+![Bright-Money Logo](https://www.sherpalo.com/static/e2e31bb6a086dbce5418180ac1a6c646/logo_bright-colour.png)
 
 ## Table of Contents
 - [Tech Stack](#tech-stack)
