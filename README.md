@@ -14,7 +14,7 @@
 - [Data Model](#data-model)
 - [Project Structure](#project-structure)
 - [API Endpoint](#api-endpoint)
-- [Future Scope](#future-improvements)
+- [Future Scope](#future-scope)
 
 
 
