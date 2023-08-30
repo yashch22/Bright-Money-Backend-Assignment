@@ -51,12 +51,12 @@ To get started with the project, follow these steps:
 
    ```
 4. Setup and run rabbitmq:
-On mac
-  ``` 
-  brew install rabbitmq
-  export PATH=$PATH:/usr/local/opt/rabbitmq/sbin
-  brew services start rabbitmq
-  ```
+   On mac
+   ``` 
+   brew install rabbitmq
+   export PATH=$PATH:/usr/local/opt/rabbitmq/sbin
+   brew services start rabbitmq
+   ```
 
 5. Apply Migrations and run the server:
    ``` 
