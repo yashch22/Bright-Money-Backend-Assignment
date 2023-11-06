@@ -1,11 +1,11 @@
-# Bright-Money-Backend-Assignment
+# Loan Management System
 
 
 
 
 
 
-<img src="https://www.sherpalo.com/static/e2e31bb6a086dbce5418180ac1a6c646/logo_bright-colour.png" alt="Bright Money logo" width="200">
+
 
 
 ## Table of Contents
